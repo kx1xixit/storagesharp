@@ -436,11 +436,7 @@ class StorageSharp {
 
       const key = await this._generateKey(this.securityKey, salt);
 
-      const decrypted = await window.crypto.subtle.decrypt(
-        { name: 'AES-GCM', iv: iv },
-        key,
-        data
-      );
+      const decrypted = await window.crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, data);
 
       const decryptedText = new TextDecoder().decode(decrypted);
 
@@ -537,7 +533,7 @@ class StorageSharp {
       }
     }
 
-    keysToRemove.forEach((key) => {
+    keysToRemove.forEach(key => {
       storage.removeItem(key);
     });
     this._triggerUpdate(this._makeKey('__cleared__'));
@@ -594,7 +590,7 @@ class StorageSharp {
 
     if (typeof data !== 'object' || data === null) return;
 
-    Object.keys(data).forEach((key) => {
+    Object.keys(data).forEach(key => {
       const fullKey = this._makeKey(key);
       const val = data[key];
       const toStore = typeof val === 'object' ? JSON.stringify(val) : String(val);
