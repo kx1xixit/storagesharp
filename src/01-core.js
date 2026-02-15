@@ -237,14 +237,6 @@ class StorageSharp {
 
     if (parts.length === 1) {
       const val = storage.getItem(this._makeKey(parts[0]));
-      if (forceJson && val !== null) {
-        try {
-          JSON.parse(val);
-          return val;
-        } catch {
-          return val;
-        }
-      }
       return val;
     }
 
