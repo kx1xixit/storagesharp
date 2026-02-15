@@ -609,6 +609,10 @@ class StorageSharp {
     if (typeof data !== 'object' || data === null) return;
 
     Object.keys(data).forEach(key => {
+      if (!this._isSafeKey(key)) {
+        console.warn(`Storage#: Skipping unsafe key '${key}' during import`);
+        return;
+      }
       const fullKey = this._makeKey(key);
       const val = data[key];
       const toStore = typeof val === 'object' ? JSON.stringify(val) : String(val);
