@@ -135,7 +135,7 @@ class StorageSharp {
         {
           opcode: 'getStorageUsage',
           blockType: Scratch.BlockType.REPORTER,
-          text: 'storage bytes used',
+          text: 'total storage bytes used',
           disableMonitor: true,
         },
         '---',
