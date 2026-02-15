@@ -33,7 +33,7 @@ class StorageSharp {
 
   getInfo() {
     return {
-      id: 'kxStorageSharp',
+      id: 'kbStorageSharp',
       name: 'Storage#',
       color1: '#4a90e2',
       color2: '#357abd',
@@ -122,7 +122,7 @@ class StorageSharp {
         '---',
         {
           opcode: 'whenStorageUpdated',
-          blockType: Scratch.BlockType.HAT,
+          blockType: Scratch.BlockType.EVENT, // Corrected from HAT to EVENT
           text: 'when storage updates',
           isEdgeActivated: false,
         },
@@ -135,7 +135,7 @@ class StorageSharp {
         {
           opcode: 'getStorageUsage',
           blockType: Scratch.BlockType.REPORTER,
-          text: 'total storage bytes used',
+          text: 'storage bytes used',
           disableMonitor: true,
         },
         '---',
@@ -209,7 +209,7 @@ class StorageSharp {
   _triggerUpdate(fullKey) {
     if (this._isNamespaceKey(fullKey)) {
       this.lastUpdatedKey = this._extractKey(fullKey);
-      this.runtime.startHats('kxStorageSharp_whenStorageUpdated');
+      this.runtime.startHats('kbStorageSharp_whenStorageUpdated');
     }
   }
 
@@ -235,15 +235,14 @@ class StorageSharp {
     const storage = this._getStorage();
     if (!storage) return null;
 
-    // Optimization for non-nested keys
     if (parts.length === 1) {
       const val = storage.getItem(this._makeKey(parts[0]));
       if (forceJson && val !== null) {
         try {
-          JSON.parse(val); // Check if valid json
+          JSON.parse(val);
           return val;
         } catch {
-          return val; // Return raw value instead of double-quoted
+          return val;
         }
       }
       return val;
@@ -368,7 +367,7 @@ class StorageSharp {
       }
       this._triggerUpdate(fullRootKey);
     } catch (_e) {
-      // Ignore errors
+      // Ignore
     }
   }
 
@@ -405,8 +404,6 @@ class StorageSharp {
       const iv = window.crypto.getRandomValues(new Uint8Array(12));
 
       const key = await this._generateKey(this.securityKey, salt);
-
-      // Prepend Magic Signature for integrity check
       const dataToEncrypt = MAGIC_SIG + text;
 
       const encrypted = await window.crypto.subtle.encrypt(
@@ -447,11 +444,14 @@ class StorageSharp {
 
       const key = await this._generateKey(this.securityKey, salt);
 
-      const decrypted = await window.crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, data);
+      const decrypted = await window.crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv: iv },
+        key,
+        data
+      );
 
       const decryptedText = new TextDecoder().decode(decrypted);
 
-      // Integrity Check
       if (!decryptedText.startsWith(MAGIC_SIG)) {
         throw new Error('Integrity signature mismatch. Incorrect password?');
       }
@@ -486,9 +486,7 @@ class StorageSharp {
     const allowedSources = [SOURCE_LOCAL, SOURCE_SESSION];
     const source = String(args.SOURCE);
     if (!allowedSources.includes(source)) {
-      console.warn(
-        `Storage Manager: Invalid source '${source}'. Must be one of: ${allowedSources.join(', ')}`
-      );
+      console.warn(`Storage Manager: Invalid source '${source}'.`);
       return;
     }
     this.currentSource = source;
@@ -520,8 +518,6 @@ class StorageSharp {
     this._deleteNested(args.KEY);
   }
 
-  // --- Version Control ---
-
   setVersion(args) {
     const storage = this._getStorage();
     if (!storage) return;
@@ -537,8 +533,6 @@ class StorageSharp {
     return val === null ? '' : val;
   }
 
-  // --- Import/Export ---
-
   clearNamespace() {
     const storage = this._getStorage();
     if (!storage) return;
@@ -551,7 +545,7 @@ class StorageSharp {
       }
     }
 
-    keysToRemove.forEach(key => {
+    keysToRemove.forEach((key) => {
       storage.removeItem(key);
     });
     this._triggerUpdate(this._makeKey('__cleared__'));
@@ -608,11 +602,7 @@ class StorageSharp {
 
     if (typeof data !== 'object' || data === null) return;
 
-    Object.keys(data).forEach(key => {
-      if (!this._isSafeKey(key)) {
-        console.warn(`Storage#: Skipping unsafe key '${key}' during import`);
-        return;
-      }
+    Object.keys(data).forEach((key) => {
       const fullKey = this._makeKey(key);
       const val = data[key];
       const toStore = typeof val === 'object' ? JSON.stringify(val) : String(val);
