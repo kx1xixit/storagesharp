@@ -33,7 +33,7 @@ class StorageSharp {
 
   getInfo() {
     return {
-      id: 'kbStorageSharp',
+      id: 'kxStoraeSharp',
       name: 'Storage#',
       color1: '#4a90e2',
       color2: '#357abd',
@@ -209,7 +209,7 @@ class StorageSharp {
   _triggerUpdate(fullKey) {
     if (this._isNamespaceKey(fullKey)) {
       this.lastUpdatedKey = this._extractKey(fullKey);
-      this.runtime.startHats('kbStorageSharp_whenStorageUpdated');
+      this.runtime.startHats('kxStoraeSharp_whenStorageUpdated');
     }
   }
 
