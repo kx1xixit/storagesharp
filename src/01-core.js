@@ -33,7 +33,7 @@ class StorageSharp {
 
   getInfo() {
     return {
-      id: 'kbStorageSharp',
+      id: 'kxStorageSharp',
       name: 'Storage#',
       color1: '#4a90e2',
       color2: '#357abd',
