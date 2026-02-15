@@ -1,8 +1,8 @@
 {
-  "name": "My TurboWarp Extension",
-  "id": "myTurboWarpExtension",
-  "version": "1.0.0",
-  "description": "A custom extension for TurboWarp",
-  "author": "Your Name",
-  "license": "KBEC-1.0"
+  "name": "Storage#",
+  "id": "kxStorageSharp",
+  "version": "1.0.0-rc1",
+  "description": "Persistent storage for Scratch.",
+  "author": "kx1xixit",
+  "license": "KXEC-1.1"
 }
