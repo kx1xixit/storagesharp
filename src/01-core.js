@@ -34,14 +34,14 @@ class StorageSharp {
   getInfo() {
     return {
       id: 'kxStorageSharp',
-      name: 'Storage#',
+      name: Scratch.translate('Storage#'),
       color1: '#4a90e2',
       color2: '#357abd',
       blocks: [
         {
           opcode: 'setNamespace',
           blockType: Scratch.BlockType.COMMAND,
-          text: 'set namespace to [NAME]',
+          text: Scratch.translate('set namespace to [NAME]'),
           arguments: {
             NAME: { type: Scratch.ArgumentType.STRING, defaultValue: 'save1' },
           },
@@ -49,7 +49,7 @@ class StorageSharp {
         {
           opcode: 'setSource',
           blockType: Scratch.BlockType.COMMAND,
-          text: 'use [SOURCE] storage',
+          text: Scratch.translate('use [SOURCE] storage'),
           arguments: {
             SOURCE: { type: Scratch.ArgumentType.STRING, menu: 'storageMenu' },
           },
@@ -57,7 +57,7 @@ class StorageSharp {
         {
           opcode: 'setSecurityKey',
           blockType: Scratch.BlockType.COMMAND,
-          text: 'set export encryption key to [KEY]',
+          text: Scratch.translate('set export encryption key to [KEY]'),
           arguments: {
             KEY: { type: Scratch.ArgumentType.STRING, defaultValue: '' },
           },
@@ -66,7 +66,7 @@ class StorageSharp {
         {
           opcode: 'setValue',
           blockType: Scratch.BlockType.COMMAND,
-          text: 'set key [KEY] to [VALUE]',
+          text: Scratch.translate('set key [KEY] to [VALUE]'),
           arguments: {
             KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'player.score' },
             VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: '100' },
@@ -75,7 +75,7 @@ class StorageSharp {
         {
           opcode: 'getValue',
           blockType: Scratch.BlockType.REPORTER,
-          text: 'get key [KEY]',
+          text: Scratch.translate('get key [KEY]'),
           arguments: {
             KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'player.score' },
           },
@@ -83,7 +83,7 @@ class StorageSharp {
         {
           opcode: 'getObject',
           blockType: Scratch.BlockType.REPORTER,
-          text: 'get object [KEY] as JSON',
+          text: Scratch.translate('get object [KEY] as JSON'),
           arguments: {
             KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'player' },
           },
@@ -91,7 +91,7 @@ class StorageSharp {
         {
           opcode: 'keyExists',
           blockType: Scratch.BlockType.BOOLEAN,
-          text: 'key [KEY] exists?',
+          text: Scratch.translate('key [KEY] exists?'),
           arguments: {
             KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'player.score' },
           },
@@ -99,7 +99,7 @@ class StorageSharp {
         {
           opcode: 'deleteKey',
           blockType: Scratch.BlockType.COMMAND,
-          text: 'delete key [KEY]',
+          text: Scratch.translate('delete key [KEY]'),
           arguments: {
             KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'player.score' },
           },
@@ -108,7 +108,7 @@ class StorageSharp {
         {
           opcode: 'setVersion',
           blockType: Scratch.BlockType.COMMAND,
-          text: 'set data version to [VER]',
+          text: Scratch.translate('set data version to [VER]'),
           arguments: {
             VER: { type: Scratch.ArgumentType.STRING, defaultValue: '1.0' },
           },
@@ -116,39 +116,39 @@ class StorageSharp {
         {
           opcode: 'getVersion',
           blockType: Scratch.BlockType.REPORTER,
-          text: 'get data version',
+          text: Scratch.translate('get data version'),
           disableMonitor: true,
         },
         '---',
         {
           opcode: 'whenStorageUpdated',
           blockType: Scratch.BlockType.EVENT, // Corrected from HAT to EVENT
-          text: 'when storage updates',
+          text: Scratch.translate('when storage updates'),
           isEdgeActivated: false,
         },
         {
           opcode: 'getLastUpdatedKey',
           blockType: Scratch.BlockType.REPORTER,
-          text: 'last updated key',
+          text: Scratch.translate('last updated key'),
           disableMonitor: true,
         },
         {
           opcode: 'getStorageUsage',
           blockType: Scratch.BlockType.REPORTER,
-          text: 'storage bytes used',
+          text: Scratch.translate('storage bytes used'),
           disableMonitor: true,
         },
         '---',
         {
           opcode: 'exportNamespace',
           blockType: Scratch.BlockType.REPORTER,
-          text: 'export data',
+          text: Scratch.translate('export data'),
           disableMonitor: true,
         },
         {
           opcode: 'importNamespace',
           blockType: Scratch.BlockType.COMMAND,
-          text: 'import data [JSON_STR]',
+          text: Scratch.translate('import data [JSON_STR]'),
           arguments: {
             JSON_STR: { type: Scratch.ArgumentType.STRING, defaultValue: '{}' },
           },
@@ -156,7 +156,7 @@ class StorageSharp {
         {
           opcode: 'downloadExport',
           blockType: Scratch.BlockType.COMMAND,
-          text: 'download export as [FILENAME].json',
+          text: Scratch.translate('download export as [FILENAME].json'),
           arguments: {
             FILENAME: { type: Scratch.ArgumentType.STRING, defaultValue: 'my-game-save' },
           },
@@ -164,7 +164,7 @@ class StorageSharp {
         {
           opcode: 'clearNamespace',
           blockType: Scratch.BlockType.COMMAND,
-          text: 'clear all data in namespace',
+          text: Scratch.translate('clear all data in namespace'),
           isDangerous: true,
         },
       ],
@@ -172,8 +172,8 @@ class StorageSharp {
         storageMenu: {
           acceptReporters: true,
           items: [
-            { text: 'Local (Persistent)', value: SOURCE_LOCAL },
-            { text: 'Session (Temporary)', value: SOURCE_SESSION },
+            { text: Scratch.translate('Local (Persistent)'), value: SOURCE_LOCAL },
+            { text: Scratch.translate('Session (Temporary)'), value: SOURCE_SESSION },
           ],
         },
       },
