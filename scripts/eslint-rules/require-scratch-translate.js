@@ -106,7 +106,7 @@ export default {
 
         if (keyName !== 'name' && keyName !== 'text') return;
 
-        // Only flag non-empty string literals
+        // Flag non-empty string literals
         if (
           node.value.type === 'Literal' &&
           typeof node.value.value === 'string' &&
@@ -128,6 +128,29 @@ export default {
               );
             },
           });
+        }
+
+        // Also flag no-substitution template literals: `say hi`
+        if (
+          node.value.type === 'TemplateLiteral' &&
+          node.value.expressions.length === 0
+        ) {
+          const raw = node.value.quasis[0]?.value?.cooked ?? '';
+          if (raw.length > 0) {
+            context.report({
+              node: node.value,
+              messageId: 'requireTranslate',
+              data: { property: keyName },
+              fix(fixer) {
+                const inner = JSON.stringify(raw).slice(1, -1);
+                const escaped = inner.replace(/\\"/g, '"').replace(/'/g, "\\'");
+                return fixer.replaceText(
+                  node.value,
+                  `Scratch.translate('${escaped}')`
+                );
+              },
+            });
+          }
         }
       },
     };

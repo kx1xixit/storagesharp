@@ -80,6 +80,27 @@ globalThis.Scratch = {
 };
 
 require(BUILD_FILE);
+
+// Assert the extension registered itself
+if (!registeredExtension) {
+  console.error('FAIL: Extension did not call Scratch.extensions.register().');
+  process.exit(1);
+}
+
+// Assert getInfo() can be called successfully
+let info;
+try {
+  if (typeof registeredExtension.getInfo !== 'function') {
+    console.error('FAIL: Registered extension does not have a getInfo() method.');
+    process.exit(1);
+  }
+  info = registeredExtension.getInfo();
+} catch (err) {
+  const detail = err instanceof Error ? err.message : String(err);
+  console.error(`FAIL: getInfo() threw an error: ${detail}`);
+  process.exit(1);
+}
+
 console.log('Runtime check passed.');
 
 // Report bundle size
@@ -87,15 +108,5 @@ const size = (fs.statSync(BUILD_FILE).size / 1024).toFixed(2);
 console.log(`Bundle size:   ${size} KB`);
 
 // Report block count via getInfo()
-if (registeredExtension && typeof registeredExtension.getInfo === 'function') {
-  try {
-    const info = registeredExtension.getInfo();
-    const blockCount = info?.blocks?.length ?? 0;
-    console.log(`Blocks:        ${blockCount} (extension id: ${info?.id})`);
-  } catch (err) {
-    const detail = err instanceof Error ? err.message : String(err);
-    console.error(`Could not call getInfo() on registered extension: ${detail}`);
-  }
-} else {
-  console.warn('Could not retrieve block info from registered extension.');
-}
+const blockCount = info?.blocks?.length ?? 0;
+console.log(`Blocks:        ${blockCount} (extension id: ${info?.id})`);
