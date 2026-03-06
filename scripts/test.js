@@ -79,7 +79,13 @@ globalThis.Scratch = {
   vm: { runtime: { startHats: () => {} } },
 };
 
-require(BUILD_FILE);
+try {
+  require(BUILD_FILE);
+} catch (err) {
+  const detail = err instanceof Error ? err.message : String(err);
+  console.error(`FAIL: Extension bundle threw on load: ${detail}`);
+  process.exit(1);
+}
 
 // Assert the extension registered itself
 if (!registeredExtension) {

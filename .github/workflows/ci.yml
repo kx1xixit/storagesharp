@@ -255,7 +255,7 @@ jobs:
           retention-days: 7
 
       - name: Comment PR with build report
-        if: github.event_name == 'pull_request' && matrix.node-version == '20.x'
+        if: github.event_name == 'pull_request' && matrix.node-version == '20.x' && github.event.pull_request.head.repo.full_name == github.repository
         uses: actions/github-script@v8
         env:
           ARTIFACT_URL: ${{ steps.upload-artifact.outputs.artifact-url }}
