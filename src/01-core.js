@@ -148,15 +148,15 @@ class StorageSharp {
         {
           opcode: 'importNamespace',
           blockType: Scratch.BlockType.COMMAND,
-          text: Scratch.translate('import data [JSON_STR]'),
+          text: Scratch.translate('import data [DATA_STR]'),
           arguments: {
-            JSON_STR: { type: Scratch.ArgumentType.STRING, defaultValue: '{}' },
+            DATA_STR: { type: Scratch.ArgumentType.STRING, defaultValue: '{}' },
           },
         },
         {
           opcode: 'downloadExport',
           blockType: Scratch.BlockType.COMMAND,
-          text: Scratch.translate('download export as [FILENAME].json'),
+          text: Scratch.translate('download export as [FILENAME]'),
           arguments: {
             FILENAME: { type: Scratch.ArgumentType.STRING, defaultValue: 'my-game-save' },
           },
@@ -569,7 +569,7 @@ class StorageSharp {
     const storage = this._getStorage();
     if (!storage) return;
 
-    let jsonStr = args.JSON_STR;
+    let jsonStr = args.DATA_STR;
 
     if (this.securityKey) {
       const decrypted = await this._decrypt(jsonStr);

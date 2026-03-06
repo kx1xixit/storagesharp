@@ -34,9 +34,9 @@ export default {
      */
     const getInfoStack = [];
 
-    /** Returns true when the current position is inside a getInfo() body. */
+    /** Returns true when the immediate enclosing function is a getInfo() body. */
     function insideGetInfo() {
-      return getInfoStack.some(Boolean);
+      return Boolean(getInfoStack[getInfoStack.length - 1]);
     }
 
     /**

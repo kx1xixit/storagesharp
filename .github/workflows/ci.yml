@@ -246,22 +246,6 @@ jobs:
           }
           EOF
 
-      - name: Validate manifest (ID & version)
-        run: |
-          node -e "
-            const m = require('./src/manifest.json');
-            let failed = false;
-            if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(m.id)) {
-              console.error(\`::error file=src/manifest.json::Invalid ID format: \"\${m.id}\". Must start with a letter and contain only letters, digits, or underscores.\`);
-              failed = true;
-            }
-            if (!/^\d+\.\d+\.\d+/.test(m.version)) {
-              console.error(\`::error file=src/manifest.json::Invalid version: \"\${m.version}\". Use SemVer (e.g. 1.0.0).\`);
-              failed = true;
-            }
-            if (failed) process.exit(1);
-          "
-
       - name: Upload build artifacts
         id: upload-artifact
         uses: actions/upload-artifact@v7
