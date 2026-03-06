@@ -8,5 +8,9 @@
   "ignorePaths": [
     "node_modules",
     "dist"
+  ],
+  "words": [
+    "ciphertext",
+    "platformer"
   ]
 }

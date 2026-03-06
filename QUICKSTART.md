@@ -1,136 +1,103 @@
-# Quick Start Guide
+# Quick Start — Storage#
 
-Get up and running with your TurboWarp extension in 5 minutes!
+Get Storage# running in your TurboWarp project in minutes.
 
 ## Prerequisites
 
-- Node.js 18+ ([Download](https://nodejs.org/))
-- TurboWarp ([Link](https://turbowarp.org/)) or Scratch 3.0+
+- [TurboWarp](https://turbowarp.org) (custom extensions require the desktop app or a compatible fork for unsandboxed mode)
+- Node.js 18+ if you want to build from source
 
-## Setup (One-time)
+## Option A: Load a pre-built release
+
+1. Download `extension.js` from the [latest release](https://github.com/kx1xixit/storagesharp/releases/latest)
+2. Open TurboWarp
+3. Click **Add Extension** → **Load Custom Extension**
+4. Upload the file — the **Storage#** category will appear in the block palette
+
+## Option B: Build from source
 
 ```bash
-# 1. Clone your repository
-git clone https://github.com/YOUR-USERNAME/YOUR-REPO-NAME.git
-cd YOUR-REPO-NAME
-
-# 2. Install dependencies
+git clone https://github.com/kx1xixit/storagesharp.git
+cd storagesharp
 npm install
-
-# 3. Build the extension
 npm run build
 ```
 
-## Development Workflow
+Then load `build/extension.js` in TurboWarp as above.
 
-### Option A: One-time Build (Simple)
+## Your first save/load
 
-1. Edit files in `src/`
-2. Run `npm run build`
-3. Load the extension in TurboWarp
-
-### Option B: Watch Mode (Recommended)
-
-1. Install chokidar: `npm install --save-dev chokidar`
-2. Start watching: `npm run watch`
-3. Edit files in `src/` - changes auto-build!
-4. Reload the extension in TurboWarp
-
-## Using Your Extension
-
-1. **Build**: `npm run build`
-2. **Load in TurboWarp**:
-   - Go to [turbowarp.org](https://turbowarp.org)
-   - Click "Add Extension"
-   - Click "Load Custom Extension"
-   - Select or paste path to `build/extension.js`
-3. **Test**: Your extension blocks should appear in the editor
-4. **Debug**: Check browser console (F12) for errors
-
-## Project Structure
+### Save a value
 
 ```
-src/               ← Edit your code here
-├── 01-core.js     ← Main extension class (must have getInfo())
-├── 02-*.js        ← Helper files (optional)
-└── manifest.json  ← Extension metadata
-
-build/
-└── extension.js   ← Generated output (don't edit!)
-
-scripts/
-└── build.js       ← Build script
+when green flag clicked
+[set namespace to [my-game]]
+[set key [player.score] to [0]]
 ```
 
-## Creating Your First Block
+### Load a value
 
-1. Edit `src/01-core.js`
-2. Add a block to the `getInfo()` method:
-
-```javascript
-getInfo() {
-  return {
-    id: 'myExtension',
-    name: 'My Extension',
-    blocks: [
-      {
-        opcode: 'myBlock',
-        blockType: 'reporter',
-        text: 'say [TEXT]',
-        arguments: {
-          TEXT: {
-            type: 'string',
-            defaultValue: 'hello',
-          },
-        },
-      },
-    ],
-  };
-}
+```
+when green flag clicked
+set [score] to (get key [player.score])
 ```
 
-3. Add the block implementation:
+### Check if data exists
 
-```javascript
-myBlock(args) {
-  return `You said: ${args.TEXT}`;
-}
+```
+if <key [player.score] exists?> then
+  set [score] to (get key [player.score])
+else
+  [set key [player.score] to [0]]
+end
 ```
 
-4. Build: `npm run build`
-5. Load in TurboWarp and test!
+## Namespaces
 
-## Common Commands
+Namespaces keep data from different projects separate. Always set a namespace before reading or writing:
 
-| Command          | What it does                     |
-| ---------------- | -------------------------------- |
-| `npm run build`  | Build the extension once         |
-| `npm run watch`  | Rebuild automatically on changes |
-| `npm run lint`   | Check for code errors            |
-| `npm run format` | Auto-format your code            |
-| `npm run test`   | Run tests                        |
-
-## Publishing a Release
-
-```bash
-# Update version in src/manifest.json
-
-# Create a git tag
-git tag v1.0.0
-
-# Push to GitHub
-git push origin main --tags
+```
+[set namespace to [platformer-v1]]
 ```
 
-→ GitHub Actions will automatically create a release!
+## Local vs. session storage
 
-## Need Help?
+By default Storage# uses `localStorage` (data persists after the tab closes). Switch to `sessionStorage` for data that should only last for the current tab session:
 
-- Full docs: [README.md](README.md)
-- Contributing: [CONTRIBUTING.md](CONTRIBUTING.md)
-- Issues: [Create an issue](../../issues/new)
-- Scratch Extension Protocol: [Scratch Wiki](https://en.scratch-wiki.info/wiki/Scratch_Extension_Protocol)
+```
+[use [Session (Temporary)] storage]
+```
 
----
+## Exporting and importing saves
 
-Happy extending!
+```
+(export data)                         → JSON string of the entire namespace
+[import data [(export data)]]         → restore from that string
+[download export as [my-game-save]]   → save a .json file to disk
+```
+
+Add an encryption key before exporting to protect the data:
+
+```
+[set export encryption key to [s3cr3t]]
+(export data)    → encrypted base64 string
+```
+
+Use the same key when importing to decrypt.
+
+## Common commands reference
+
+| Command | What it does |
+|---|---|
+| `npm run build` | Compile `src/` → `build/extension.js` |
+| `npm run watch` | Rebuild automatically on file changes |
+| `npm run lint` | Check source code for errors |
+| `npm run format` | Auto-format source code |
+| `npm run validate` | Validate manifest and extension structure |
+
+## Need help?
+
+- Full documentation: [README.md](README.md)
+- Block reference: [docs/example.md](docs/example.md)
+- Report a bug: [open an issue](../../issues/new)
+
