@@ -29,7 +29,7 @@ Then load `build/extension.js` in TurboWarp as above.
 
 ### Save a value
 
-```
+```text
 when green flag clicked
 [set namespace to [my-game]]
 [set key [player.score] to [0]]
@@ -37,14 +37,14 @@ when green flag clicked
 
 ### Load a value
 
-```
+```text
 when green flag clicked
 set [score] to (get key [player.score])
 ```
 
 ### Check if data exists
 
-```
+```text
 if <key [player.score] exists?> then
   set [score] to (get key [player.score])
 else
@@ -56,7 +56,7 @@ end
 
 Namespaces keep data from different projects separate. Always set a namespace before reading or writing:
 
-```
+```text
 [set namespace to [platformer-v1]]
 ```
 
@@ -64,13 +64,13 @@ Namespaces keep data from different projects separate. Always set a namespace be
 
 By default Storage# uses `localStorage` (data persists after the tab closes). Switch to `sessionStorage` for data that should only last for the current tab session:
 
-```
+```text
 [use [Session (Temporary)] storage]
 ```
 
 ## Exporting and importing saves
 
-```
+```text
 (export data)                         → JSON string of the entire namespace
 [import data [(export data)]]         → restore from that string
 [download export as [my-game-save]]   → save a .json file to disk
@@ -78,7 +78,7 @@ By default Storage# uses `localStorage` (data persists after the tab closes). Sw
 
 Add an encryption key before exporting to protect the data:
 
-```
+```text
 [set export encryption key to [s3cr3t]]
 (export data)    → encrypted base64 string
 ```

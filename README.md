@@ -10,7 +10,7 @@
 - **Local & session storage** — choose between persistent (`localStorage`) and tab-scoped (`sessionStorage`) storage
 - **Nested keys** — read and write deeply nested values using dot notation (`player.stats.score`)
 - **Data versioning** — tag saved data with a version string for migration support
-- **Cross-tab events** — a "when storage updates" hat block fires when another tab modifies storage
+- **Cross-tab events** — a "when storage updates" hat block fires whenever storage in the current namespace changes, including changes from other tabs
 - **Import / export** — serialize an entire namespace to JSON and restore it later
 - **AES-GCM encryption** — optionally encrypt exported data with a password using WebCrypto
 - **Downloadable exports** — trigger a file download of the exported namespace directly from a block
@@ -18,17 +18,19 @@
 ## Installation
 
 1. Build the extension:
+
    ```bash
    npm install
    npm run build
    ```
+
 2. Go to [TurboWarp](https://turbowarp.org)
 3. Click **Add Extension** → **Load Custom Extension**
 4. Upload `build/extension.js` or paste a hosted URL
 
 ## Quick Example
 
-```
+```text
 [set namespace to [save1]]
 [set key [player.score] to [100]]
 [set key [player.name] to [Alice]]
@@ -64,7 +66,7 @@
 
 Namespaces prefix every key in storage, keeping projects isolated:
 
-```
+```text
 [set namespace to [game-v2]]
 [set key [score] to [500]]
 ```
@@ -75,7 +77,7 @@ The actual storage key becomes `game-v2::score`. Switching namespaces does not c
 
 Keys containing `.` are stored as nested JSON objects under a single root key:
 
-```
+```text
 set key [player.score] to [100]
 set key [player.name] to [Alice]
 
@@ -88,14 +90,14 @@ Reading a non-leaf node with `get object [KEY] as JSON` returns the serialized o
 
 Set an encryption key before exporting to protect save data:
 
-```
+```text
 [set export encryption key to [s3cr3t]]
 (export data)          → base64-encoded AES-GCM ciphertext
 ```
 
 Import with the same key to decrypt:
 
-```
+```text
 [set export encryption key to [s3cr3t]]
 [import data [(export data)]]
 ```

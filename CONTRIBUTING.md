@@ -14,8 +14,8 @@ npm install
 
 ```
 src/
-└── 01-core.js        ← All extension logic lives here
-    manifest.json     ← Extension metadata (name, version, license…)
+├── 01-core.js        ← All extension logic lives here
+└── manifest.json     ← Extension metadata (name, version, license…)
 
 scripts/
 ├── build.js          ← Bundles src/ → build/extension.js
@@ -104,8 +104,8 @@ Source files are numbered so the build script processes them in the right order:
 ### Security
 
 - Never commit secrets or credentials.
-- All storage keys are validated through `_isSafeKey()` to prevent prototype pollution.
-- If you add new ways to read from or write to storage, ensure they go through the same safety checks.
+- All storage keys used by the normal read/write/delete operations are validated through `_isSafeKey()` to prevent prototype pollution.
+- If you add new ways to read from or write to storage (including import/export paths), ensure they go through the same `_isSafeKey()`-based safety checks.
 
 ## Submitting changes
 
