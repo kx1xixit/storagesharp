@@ -1,239 +1,125 @@
-# TurboWarp Extension Template
+# Storage# (StorageSharp)
 
-A template repository for creating **TurboWarp/Scratch extensions** with CI/CD workflows and automated builds.
+**Storage#** is a TurboWarp/Scratch 3 extension that provides persistent, namespaced storage for projects. It wraps the browser's `localStorage` and `sessionStorage` APIs and adds namespacing, dot-notation nested key access, versioning, cross-tab event support, and optional AES-GCM encryption for data export.
+
+> **Requires unsandboxed execution.** Storage# must be loaded as an unsandboxed extension because it needs direct access to browser storage APIs.
 
 ## Features
 
-- **Modular Architecture**: Organize your extension code into separate files
-- **Automated Build System**: Combines multiple JS files from `/src/` into a single extension bundle
-- **CI/CD Workflows**: GitHub Actions for building, testing, and releasing
-- **Watch Mode**: Development mode with automatic rebuilding on file changes
-- **Linting & Formatting**: ESLint and Prettier pre-configured
-- **Release Automation**: Automatic release creation with build artifacts
-- **Scratch Extension Format**: Ready for TurboWarp or Scratch 3.0+ environments
+- **Namespaced storage** — isolate data by namespace so multiple projects never collide
+- **Local & session storage** — choose between persistent (`localStorage`) and tab-scoped (`sessionStorage`) storage
+- **Nested keys** — read and write deeply nested values using dot notation (`player.stats.score`)
+- **Data versioning** — tag saved data with a version string for migration support
+- **Cross-tab events** — a "when storage updates" hat block fires whenever storage in the current namespace changes, including changes from other tabs
+- **Import / export** — serialize an entire namespace to JSON and restore it later
+- **AES-GCM encryption** — optionally encrypt exported data with a password using WebCrypto
+- **Downloadable exports** — trigger a file download of the exported namespace directly from a block
 
-## Getting Started
+## Installation
 
-### Prerequisites
+1. Build the extension:
 
-- Node.js 18+ or 20+
-- npm or yarn
-- TurboWarp or Scratch 3.0+ environment
-
-### Installation
-
-1. Clone this repository
-2. Install dependencies:
    ```bash
    npm install
+   npm run build
    ```
 
-### Development
-
-#### Build the extension
-
-```bash
-npm run build
-```
-
-This creates `build/extension.js` by combining all `.js` files from `src/`.
-
-#### Watch mode (automatic rebuild on file changes)
-
-```bash
-npm run watch
-```
-
-#### Lint your code
-
-```bash
-npm run lint
-```
-
-#### Format code
-
-```bash
-npm run format
-```
-
-## Project Structure
-
-```
-├── src/
-│   ├── manifest.json          # Extension metadata
-│   ├── 01-core.js             # Main extension class
-│   ├── 02-example-module.js   # Example helper code
-│   └── [other modules].js     # Add more modules here
-├── build/
-│   └── extension.js           # Generated output file
-├── scripts/
-│   └── build.js               # Build script
-└── Configuration files
-```
-
-## How It Works
-
-### File Loading Order
-
-Files in `src/` are loaded in **alphabetical order** by the build script. Use numbered prefixes to control load order:
-
-- `01-core.js` - Main extension class (loaded first, must have `getInfo()` and block methods)
-- `02-helpers.js` - Helper functions and utilities
-- `03-utils.js` - Additional utilities
-- etc.
-
-### Extension Structure
-
-The generated `extension.js` includes:
-
-1. **Extension Header**: Generated from `src/manifest.json`
-2. **IIFE Wrapper**: `(function (Scratch) { ... })(Scratch)`
-3. **All Source Files**: Concatenated in alphabetical order
-4. **Extension Registration**: `Scratch.extensions.register(new YourExtension())`
-
-### Creating Blocks
-
-Add blocks to your extension's `getInfo()` method:
-
-```javascript
-class MyExtension {
-  getInfo() {
-    return {
-      id: 'myExtension',
-      name: 'My Extension',
-      color1: '#4CAF50',
-      blocks: [
-        {
-          opcode: 'myBlock',
-          blockType: 'reporter',
-          text: 'my block',
-        },
-      ],
-    };
-  }
-
-  myBlock() {
-    return 'Hello!';
-  }
-}
-```
-
-## Configuration
-
-### manifest.json
-
-Customize your extension metadata in `src/manifest.json`:
-
-```json
-{
-  "name": "My Extension",
-  "id": "myExtension",
-  "version": "1.0.0",
-  "description": "What does my extension do?",
-  "author": "Your Name",
-  "licence": "MIT"
-}
-```
-
-The metadata is automatically inserted into the extension header:
-
-```javascript
-// Name: My Extension
-// ID: myExtension
-// Description: What does my extension do?
-// By: Your Name
-// Licence: MIT
-// Version 1.0.0
-```
-
-### ESLint & Prettier
-
-Edit `.eslintrc.json` and `.prettierrc.json` to customize linting and formatting rules.
-
-## CI/CD Workflows
-
-### Build Workflow (`.github/workflows/build.yml`)
-
-Automatically builds the extension on:
-
-- Push to `main`, `develop`, or `master` branches
-- Pull requests to these branches
-- Tests against Node.js 18.x and 20.x
-
-Artifacts are uploaded and available for download.
-
-### Release Workflow (`.github/workflows/release.yml`)
-
-Automatically builds and releases the extension when you:
-
-1. Create a git tag: `git tag v1.0.0`
-2. Push the tag: `git push origin v1.0.0`
-
-The workflow will:
-
-- Build the extension
-- Create a GitHub release
-- Upload `build/extension.js` as a release asset
-
-## Installation in TurboWarp
-
-1. Build the extension: `npm run build`
 2. Go to [TurboWarp](https://turbowarp.org)
-3. Click "Add Extension" → "Load Custom Extension"
-4. Paste the URL or upload `build/extension.js` file
-5. The extension blocks will appear in the editor
+3. Click **Add Extension** → **Load Custom Extension**
+4. Upload `build/extension.js` or paste a hosted URL
 
-### For Local Testing
+## Quick Example
 
-To test locally during development, you can use a fork of TurboWarp that loads extensions from a local server:
+```text
+[set namespace to [save1]]
+[set key [player.score] to [100]]
+[set key [player.name] to [Alice]]
 
-1. Build: `npm run build`
-2. Start a local HTTP server
-3. Load from `http://localhost:PORT/build/extension.js`
+(get key [player.score])          → "100"
+(get object [player] as JSON)     → {"score":"100","name":"Alice"}
+<key [player.score] exists?>      → true
+```
 
-## Tips
+## Block Reference
 
-- **Development**: Use `npm run watch` while developing to automatically rebuild on changes
-- **Testing**: Load the extension in TurboWarp's "Load Custom Extension" dialog
-- **Versioning**: Update `version` in `src/manifest.json` when releasing new versions
-- **Block Colors**: Use hex colors in `getInfo()` for `color1`, `color2`, `color3`
-- **Block Types**: Use `'reporter'`, `'command'`, `'boolean'`, `'hat'`, or `'conditional'`
+| Block | Type | Description |
+|---|---|---|
+| `set namespace to [NAME]` | Command | Switch the active namespace. All subsequent reads and writes use this namespace. Default: `default`. |
+| `use [SOURCE] storage` | Command | Switch between **Local (Persistent)** and **Session (Temporary)** storage. |
+| `set export encryption key to [KEY]` | Command | Set the AES-GCM password used to encrypt/decrypt exported data. Leave empty to disable encryption. |
+| `set key [KEY] to [VALUE]` | Command | Write a value. Supports dot-notation for nested objects (`player.stats.score`). |
+| `get key [KEY]` | Reporter | Read a value. Returns `""` if the key does not exist. |
+| `get object [KEY] as JSON` | Reporter | Read a key as a JSON string. Useful for reading an entire nested object. |
+| `key [KEY] exists?` | Boolean | Returns `true` if the key has a stored value. |
+| `delete key [KEY]` | Command | Delete a key. Empty parent objects are pruned automatically. |
+| `set data version to [VER]` | Command | Store a version tag for the current namespace (e.g. `"1.0"`). |
+| `get data version` | Reporter | Read back the stored version tag. |
+| `when storage updates` | Event | Fires when any key in the current namespace changes (including from other tabs). |
+| `last updated key` | Reporter | The key that triggered the most recent storage update event. |
+| `storage bytes used` | Reporter | Approximate total bytes used by the current storage backend. |
+| `export data` | Reporter | Serialize the entire namespace to a JSON string (encrypted if a key is set). |
+| `import data [DATA_STR]` | Command | Restore a namespace from a previously exported string. |
+| `download export as [FILENAME]` | Command | Download the exported namespace as a `.json` (or `.enc` when encrypted) file. |
+| `clear all data in namespace` | Command | ⚠ Permanently delete every key in the current namespace. |
 
-## Troubleshooting
+## Namespaces
 
-### Extension doesn't load
+Namespaces prefix every key in storage, keeping projects isolated:
 
-- Check browser console for error messages
-- Verify the extension ID is unique
-- Ensure syntax is valid: run `npm run lint`
+```text
+[set namespace to [game-v2]]
+[set key [score] to [500]]
+```
 
-### Changes not reflected
+The actual storage key becomes `game-v2::score`. Switching namespaces does not copy or migrate data; you must handle that in your project.
 
-- Run `npm run build` to rebuild if not in watch mode
-- Hard refresh TurboWarp (Ctrl+Shift+R)
-- For block changes: reload extension via "Load Custom Extension"
+## Dot-Notation Keys
 
-### Build errors
+Keys containing `.` are stored as nested JSON objects under a single root key:
 
-- Check that all `.js` files in `src/` have valid JavaScript syntax
-- Run `npm run lint` to find potential issues
-- Ensure manifest.json is valid JSON
+```text
+set key [player.score] to [100]
+set key [player.name] to [Alice]
 
-## Example Extensions
+→ localStorage["default::player"] = '{"score":"100","name":"Alice"}'
+```
 
-This template includes example code. To see it in action:
+Reading a non-leaf node with `get object [KEY] as JSON` returns the serialized object.
 
-1. Run `npm run build`
-2. Load `build/extension.js` into TurboWarp
-3. Look for "My Extension" in the extensions menu
-4. Use the example blocks
+## Encryption
 
-## License
+Set an encryption key before exporting to protect save data:
 
-MIT
+```text
+[set export encryption key to [s3cr3t]]
+(export data)          → base64-encoded AES-GCM ciphertext
+```
+
+Import with the same key to decrypt:
+
+```text
+[set export encryption key to [s3cr3t]]
+[import data [(export data)]]
+```
+
+Exports without an encryption key are plain JSON.
+
+## Development
+
+```bash
+npm install          # Install dependencies
+npm run build        # Build build/extension.js
+npm run watch        # Rebuild on file changes
+npm run lint         # Run ESLint
+npm run format       # Auto-format with Prettier
+npm run spellcheck   # Spell-check source and docs
+npm run validate     # Validate manifest and extension structure
+```
 
 ## Contributing
 
-Feel free to use this template as a starting point for your own TurboWarp/Scratch extensions!
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-For questions or improvements, open an issue or pull request.
+## License
+
+KXEC-1.1 — see [LICENSE](LICENSE).
